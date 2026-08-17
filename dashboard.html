@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投资研究仪表盘 · 金渐成研究站</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  /* 仪表盘专属布局：复用全站设计系统，仅补充栅格/筛选控件 */
+  .dash-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; margin-bottom: 8px;
+  }
+  .dash-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    font-size: 12.5px; padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink-2);
+    cursor: pointer; font-weight: 500; transition: all .15s;
+  }
+  .pill:hover { border-color: var(--stable); color: var(--ink); }
+  .pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .dash-search {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); background: var(--paper);
+    border-radius: 10px; padding: 8px 12px; min-width: 220px;
+  }
+  .dash-search svg { flex-shrink: 0; }
+  .dash-search input { border: none; outline: none; background: transparent; font-size: 13.5px; color: var(--ink); width: 100%; }
+  .account-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; }
+  .account-grid .account { margin-bottom: 0; }
+  .account-mini { font-size: 13px; color: var(--ink-2); line-height: 1.7; }
+  .account-mini .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+  .account-mini .row:last-child { border-bottom: none; }
+  .account-mini .row b { font-family: "SF Mono",Menlo,Consolas,monospace; color: var(--ink); font-weight: 600; }
+  .kpi-value.pos { color: var(--buy); }
+  @media (max-width: 760px) {
+    .dash-search { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand"><span class="dot"></span>金渐成研究站 <small>· 玑哥投资体系</small></div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="dashboard.html" class="active">仪表盘</a>
+      <a href="portfolio.html">持仓</a>
+      <a href="stocks.html">个股</a>
+      <a href="bitcoin.html">比特币</a>
+      <a href="copper.html">铜</a>
+      <a href="timeline.html">时间线</a>
+      <a href="philosophy.html">投资理念</a>
+      <a href="shengji.html">随笔</a>
+      <a href="life.html">生活</a>
+      <a href="parenting.html">育儿</a>
+      <a href="inheritance.html">家学</a>
+      <a href="food-safety.html">食安</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="meta">投资研究仪表盘 · 整理自金建成的公众号</div>
+    <div class="dash-head">
+      <div>
+        <h1 style="font-size:34px;margin-bottom:6px;">投资研究仪表盘</h1>
+        <p class="hero-sub" style="font-size:15px;margin-top:0;">一张图看全：三账户分工、核心持仓、历年收益与净值走势。</p>
+      </div>
+      <div class="dash-filters">
+        <span class="pill active">全部</span>
+        <span class="pill">近 1 年</span>
+        <span class="pill">近 1 月</span>
+        <span class="dash-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#767676" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="搜索标的 / 账户">
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">持仓账户</div><div class="kpi-value">4</div><div class="kpi-sub">进取 / 稳健 / 防守 / 国际</div></div>
+    <div class="kpi"><div class="kpi-label">核心持仓标的</div><div class="kpi-value">6</div><div class="kpi-sub">NVDA·TSM·腾讯·茅台·BTC·铜</div></div>
+    <div class="kpi"><div class="kpi-label">茅台清仓收益</div><div class="kpi-value pos">+356%</div><div class="kpi-sub">340 建仓 → 1550 清仓</div></div>
+    <div class="kpi"><div class="kpi-label">英伟达持仓占比</div><div class="kpi-value">45–48%</div><div class="kpi-sub">进取型第一重仓</div></div>
+  </section>
+
+  <h2>三账户 + 国际账户</h2>
+  <div class="account-grid">
+
+    <div class="account account-aggressive">
+      <div class="account-head">
+        <div class="account-name">进取型</div>
+        <span class="account-tag tag-aggressive">印钞机 · 高弹性</span>
+      </div>
+      <div class="account-body">
+        <div class="account-mini">
+          <div class="row"><span>第一重仓</span><b>英伟达 45–48%</b></div>
+          <div class="row"><span>第二重仓</span><b>谷歌</b></div>
+          <div class="row"><span>核心持仓</span><b>微软 / 亚马逊 / 苹果</b></div>
+          <div class="row"><span>弹性配置</span><b>台积电 / Meta</b></div>
+        </div>
+        <div class="strategy-box">
+          <div class="strategy-title">定位</div>
+          <ul class="strategy-list">
+            <li>用 AI 主线做超额收益</li>
+            <li>负成本后拿"免费筹码"</li>
+            <li>倒金字塔减仓锁利润</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="account account-stable">
+      <div class="account-head">
+        <div class="account-name">稳健型</div>
+        <span class="account-tag tag-stable">宽基为锚</span>
+      </div>
+      <div class="account-body">
+        <div class="account-mini">
+          <div class="row"><span>纳指 100</span><b>宽基核心</b></div>
+          <div class="row"><span>标普 500</span><b>宽基核心</b></div>
+          <div class="row"><span>宽基占比</span><b>65% → 80%</b></div>
+          <div class="row"><span>功能</span><b>平滑波动</b></div>
+        </div>
+        <div class="strategy-box">
+          <div class="strategy-title">定位</div>
+          <ul class="strategy-list">
+            <li>不押个股，押指数beta</li>
+            <li>市场便宜时加宽基</li>
+            <li>组合的稳定器</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="account account-defensive">
+      <div class="account-head">
+        <div class="account-name">防守型</div>
+        <span class="account-tag tag-defensive">压舱石 · 现金流</span>
+      </div>
+      <div class="account-body">
+        <div class="account-mini">
+          <div class="row"><span>现金类</span><b>美债</b></div>
+          <div class="row"><span>消费底仓</span><b>可口可乐 / 伯克希尔</b></div>
+          <div class="row"><span>医药分红</span><b>强生 / SCHD</b></div>
+          <div class="row"><span>功能</span><b>兜底现金流</b></div>
+        </div>
+        <div class="strategy-box">
+          <div class="strategy-title">定位</div>
+          <ul class="strategy-list">
+            <li>永远不满仓，留子弹</li>
+            <li>分红再投入滚雪球</li>
+            <li>极端行情的缓冲垫</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="account account-intl">
+      <div class="account-head">
+        <div class="account-name">国际账户</div>
+        <span class="account-tag tag-intl">跨市场分散</span>
+      </div>
+      <div class="account-body">
+        <div class="account-mini">
+          <div class="row"><span>港股核心</span><b>腾讯控股</b></div>
+          <div class="row"><span>打法</span><b>负成本持仓</b></div>
+          <div class="row"><span>配置逻辑</span><b>全球资产再平衡</b></div>
+          <div class="row"><span>功能</span><b>分散单一市场</b></div>
+        </div>
+        <div class="strategy-box">
+          <div class="strategy-title">定位</div>
+          <ul class="strategy-list">
+            <li>用港股低估值做弹性</li>
+            <li>抄底后做成负成本</li>
+            <li>对冲汇率与地域风险</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>核心持仓标的</h2>
+  <div class="stock-grid">
+
+    <div class="stock-card">
+      <div class="stock-code">NVDA</div>
+      <div class="stock-name">英伟达 · 进取第一重仓</div>
+      <span class="tag tag-aggressive">AI 算力核心</span>
+      <div class="stock-stat">建仓：<strong>86 美元</strong> 抄底</div>
+      <div class="stock-stat">操作：<strong>187.5 减 30%</strong></div>
+      <div class="stock-stat">收益：<strong>13–14 倍</strong>（第二只 10 倍股）</div>
+    </div>
+
+    <div class="stock-card">
+      <div class="stock-code">TSM</div>
+      <div class="stock-name">台积电 · AI 晶圆代工垄断</div>
+      <span class="tag tag-aggressive">第二梯队核心</span>
+      <div class="stock-stat">建仓：<strong>160 美元</strong></div>
+      <div class="stock-stat">加仓：<strong>125 美元</strong> 抄底</div>
+      <div class="stock-stat">逻辑：<strong>AI 算力卖水人</strong></div>
+    </div>
+
+    <div class="stock-card">
+      <div class="stock-code">0700.HK</div>
+      <div class="stock-name">腾讯控股 · 港股核心</div>
+      <span class="tag tag-negative">负成本</span>
+      <div class="stock-stat">抄底：<strong>200 港元</strong>（2022）</div>
+      <div class="stock-stat">打法：<strong>分红再投 → 负成本</strong></div>
+      <div class="stock-stat">归属：<strong>国际账户</strong></div>
+    </div>
+
+    <div class="stock-card">
+      <div class="stock-code">600519</div>
+      <div class="stock-name">贵州茅台 · 已清仓落袋</div>
+      <span class="tag tag-sell">已清仓</span>
+      <div class="stock-stat">建仓：<strong>340 元</strong>（2017）</div>
+      <div class="stock-stat">清仓：<strong>1550 元</strong>（2024）</div>
+      <div class="stock-stat negative-cost">清仓收益：<strong>+356%</strong></div>
+    </div>
+
+    <div class="stock-card">
+      <div class="stock-code">BTC</div>
+      <div class="stock-name">比特币 · 四年周期</div>
+      <span class="tag tag-core">商品 / 加密</span>
+      <div class="stock-stat">抄底：<strong>1.8 万</strong>（2023）</div>
+      <div class="stock-stat">清仓：<strong>6.8–7 万</strong></div>
+      <div class="stock-stat">研判：<strong>12 万见顶</strong></div>
+    </div>
+
+    <div class="stock-card">
+      <div class="stock-code">COPPER</div>
+      <div class="stock-name">伦铜 · 商品周期核心</div>
+      <span class="tag tag-core">商品周期</span>
+      <div class="stock-stat">持有：<strong>2 年半</strong></div>
+      <div class="stock-stat">收益：<strong>4.4 倍</strong></div>
+      <div class="stock-stat">逻辑：<strong>周期 > 选择 > 努力</strong></div>
+    </div>
+
+  </div>
+
+  <h2>账户净值走势</h2>
+  <div class="chart-box">
+    <div class="chart-title">三账户 + 国际账户净值指数（2024 年初 = 100，示意）</div>
+    <div class="chart-sub">基于公开年化收益目标绘制，非真实账户净值；真实逐笔操作见各持仓页。</div>
+    <div class="chart-container"><canvas id="netValueChart"></canvas></div>
+  </div>
+
+</main>
+
+<footer>
+  金渐成研究站 · 整理自金建成的公众号 · 仪表盘页为投资体系概览，所有数据为公开整理，非投资建议。
+</footer>
+
+<script>
+const ctx = document.getElementById('netValueChart').getContext('2d');
+const agg = [
+  { x:'2024-01-01', y:100 }, { x:'2024-03-31', y:128 }, { x:'2024-06-30', y:165 },
+  { x:'2024-09-30', y:190 }, { x:'2024-12-31', y:215 },
+  { x:'2025-03-31', y:250 }, { x:'2025-06-30', y:300 }, { x:'2025-09-30', y:345 },
+  { x:'2025-12-31', y:372 }, { x:'2026-03-31', y:355 }, { x:'2026-06-30', y:348 },
+];
+const stable = [
+  { x:'2024-01-01', y:100 }, { x:'2024-03-31', y:106 }, { x:'2024-06-30', y:112 },
+  { x:'2024-09-30', y:118 }, { x:'2024-12-31', y:123 },
+  { x:'2025-03-31', y:128 }, { x:'2025-06-30', y:134 }, { x:'2025-09-30', y:143 },
+  { x:'2025-12-31', y:151 }, { x:'2026-03-31', y:156 }, { x:'2026-06-30', y:160 },
+];
+const defensive = [
+  { x:'2024-01-01', y:100 }, { x:'2024-03-31', y:102 }, { x:'2024-06-30', y:104 },
+  { x:'2024-09-30', y:105 }, { x:'2024-12-31', y:106 },
+  { x:'2025-03-31', y:108 }, { x:'2025-06-30', y:110 }, { x:'2025-09-30', y:112 },
+  { x:'2025-12-31', y:113 }, { x:'2026-03-31', y:116 }, { x:'2026-06-30', y:118 },
+];
+const intl = [
+  { x:'2024-01-01', y:100 }, { x:'2024-03-31', y:110 }, { x:'2024-06-30', y:122 },
+  { x:'2024-09-30', y:128 }, { x:'2024-12-31', y:132 },
+  { x:'2025-03-31', y:145 }, { x:'2025-06-30', y:158 }, { x:'2025-09-30', y:165 },
+  { x:'2025-12-31', y:169 }, { x:'2026-03-31', y:172 }, { x:'2026-06-30', y:176 },
+];
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [
+      { label:'进取型', data:agg, borderColor:'#b91c1c', backgroundColor:'rgba(185,28,28,0.06)', borderWidth:2, pointRadius:0, tension:0.25, fill:false, order:2 },
+      { label:'稳健型', data:stable, borderColor:'#1d4ed8', backgroundColor:'rgba(29,78,216,0.05)', borderWidth:2, pointRadius:0, tension:0.25, fill:false, order:3 },
+      { label:'防守型', data:defensive, borderColor:'#047857', backgroundColor:'rgba(4,120,87,0.05)', borderWidth:2, pointRadius:0, tension:0.25, fill:false, order:4 },
+      { label:'国际账户', data:intl, borderColor:'#6d28d9', backgroundColor:'rgba(109,40,217,0.05)', borderWidth:2, pointRadius:0, tension:0.25, fill:false, order:3 },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'nearest', intersect: false },
+    plugins: {
+      legend: { position:'bottom', labels:{ padding:14, usePointStyle:true, font:{ size:12 }, boxWidth:10 } },
+      tooltip: {
+        backgroundColor:'rgba(17,17,17,0.92)', titleFont:{ size:12, weight:'600' }, bodyFont:{ size:12 },
+        padding:10, cornerRadius:6,
+        callbacks: { label: c => c.dataset.label + '：' + c.raw.y.toFixed(0) }
+      },
+    },
+    scales: {
+      x: {
+        type:'time',
+        time:{ unit:'quarter', displayFormats:{ quarter:'yyyy-\'Q\'Q' }, tooltipFormat:'yyyy-MM-dd' },
+        title:{ display:true, text:'时间', font:{ size:12 }, color:'#475569' },
+        grid:{ color:'rgba(0,0,0,0.04)' },
+        ticks:{ font:{ size:10 }, color:'#64748b', maxRotation:0 }
+      },
+      y: {
+        title:{ display:true, text:'净值指数（2024 初 = 100）', font:{ size:12 }, color:'#475569' },
+        grid:{ color:'rgba(0,0,0,0.05)' },
+        ticks:{ font:{ size:11 }, color:'#64748b', callback: v => v }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
