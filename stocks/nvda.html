@@ -6,6 +6,7 @@
 <title>英伟达 NVDA · 第一重仓 · 金渐成研究站</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
 
@@ -252,24 +253,27 @@
 
 <script>
 const ctx = document.getElementById('nvda-chart').getContext('2d');
+
 const ops = [
-  { x: '2024-08-05', y: 93, op: 'buy', label: '从大饼资金抄底 $93' },
-  { x: '2025-01-20', y: 129, op: 'buy', label: '$129 买入 5%' },
-  { x: '2025-02-01', y: 120, op: 'buy', label: '$120 买入 10%' },
-  { x: '2025-02-15', y: 110, op: 'buy', label: '$110 买入 15%' },
-  { x: '2025-03-01', y: 100, op: 'buy', label: '$100 买入 20%' },
-  { x: '2025-03-15', y: 95, op: 'buy', label: '$95 买入 20%' },
-  { x: '2025-04-09', y: 86, op: 'buy', label: '$86 大量买入(七八成)' },
-  { x: '2025-04-20', y: 169, op: 'buy', label: '$169 加仓' },
-  { x: '2025-04-30', y: 165, op: 'buy', label: '$165 加仓' },
-  { x: '2025-10-03', y: 190, op: 'sell', label: '$190 减仓 5%' },
-  { x: '2025-12-01', y: 195, op: 'sell', label: '$195 减仓 5%' },
-  { x: '2025-12-15', y: 200, op: 'sell', label: '$200 减仓 5% 触发' },
-  { x: '2026-05-09', y: 208, op: 'hold', label: '$208 仓位突破 50%' },
+  { x: '2024-08-05', y: 93, op: 'buy', label: '8月5日 · 从大饼资金抄底 $93' },
+  { x: '2025-01-20', y: 129, op: 'buy', label: '1月20日 · $129 买入 5%' },
+  { x: '2025-02-01', y: 120, op: 'buy', label: '2月1日 · $120 买入 10%' },
+  { x: '2025-02-15', y: 110, op: 'buy', label: '2月15日 · $110 买入 15%' },
+  { x: '2025-03-01', y: 100, op: 'buy', label: '3月1日 · $100 买入 20%' },
+  { x: '2025-03-15', y: 95, op: 'buy', label: '3月15日 · $95 买入 20%' },
+  { x: '2025-04-09', y: 86, op: 'buy', label: '4月9日 · $86 大量买入(七八成)' },
+  { x: '2025-04-20', y: 169, op: 'buy', label: '4月20日 · $169 加仓' },
+  { x: '2025-04-30', y: 165, op: 'buy', label: '4月30日 · $165 加仓' },
+  { x: '2025-10-03', y: 190, op: 'sell', label: '10月3日 · $190 减仓 5%' },
+  { x: '2025-12-01', y: 195, op: 'sell', label: '12月1日 · $195 减仓 5%' },
+  { x: '2025-12-15', y: 200, op: 'sell', label: '12月15日 · $200 减仓 5% 触发' },
+  { x: '2026-05-09', y: 208, op: 'hold', label: '5月9日 · $208 仓位突破 50%' },
 ];
-const buys = ops.filter(o => o.op === 'buy').map(o => ({ x: o.x, y: o.y, label: o.label }));
-const sells = ops.filter(o => o.op === 'sell').map(o => ({ x: o.x, y: o.y, label: o.label }));
-const holds = ops.filter(o => o.op === 'hold').map(o => ({ x: o.x, y: o.y, label: o.label }));
+
+const buys = ops.filter(o => o.op === 'buy');
+const sells = ops.filter(o => o.op === 'sell');
+const holds = ops.filter(o => o.op === 'hold');
+
 const line = [
   { x: '2024-07-01', y: 125 }, { x: '2024-08-05', y: 93 },
   { x: '2024-09-01', y: 115 }, { x: '2024-10-01', y: 132 },
@@ -284,24 +288,99 @@ const line = [
   { x: '2026-02-28', y: 175 }, { x: '2026-03-31', y: 175 },
   { x: '2026-04-30', y: 195 }, { x: '2026-05-09', y: 208 },
 ];
+
 new Chart(ctx, {
   type: 'line',
-  data: { datasets: [
-    { label: '英伟达价格', data: line, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,0.08)', borderWidth: 1.5, pointRadius: 0, tension: 0.2, fill: true, order: 3 },
-    { label: '加仓/建仓', data: buys, borderColor: '#047857', backgroundColor: '#047857', pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', showLine: false, order: 1 },
-    { label: '减仓/止盈', data: sells, borderColor: '#b91c1c', backgroundColor: '#b91c1c', pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', pointRotation: 180, showLine: false, order: 1 },
-    { label: '里程碑', data: holds, borderColor: '#b45309', backgroundColor: '#b45309', pointRadius: 8, pointStyle: 'star', showLine: false, order: 1 }
-  ]},
+  data: {
+    datasets: [
+      {
+        label: '英伟达价格',
+        data: line,
+        borderColor: '#64748b',
+        backgroundColor: 'rgba(100,116,139,0.05)',
+        borderWidth: 1.8,
+        pointRadius: 0,
+        tension: 0.25,
+        fill: false,
+        order: 3,
+      },
+      {
+        label: '加仓/建仓',
+        data: buys,
+        borderColor: '#047857',
+        backgroundColor: '#047857',
+        pointRadius: 8,
+        pointHoverRadius: 11,
+        pointStyle: 'triangle',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 1.5,
+        showLine: false,
+        order: 1,
+      },
+      {
+        label: '减仓/止盈',
+        data: sells,
+        borderColor: '#b91c1c',
+        backgroundColor: '#b91c1c',
+        pointRadius: 8,
+        pointHoverRadius: 11,
+        pointStyle: 'triangle',
+        pointRotation: 180,
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 1.5,
+        showLine: false,
+        order: 1,
+      },
+      {
+        label: '里程碑',
+        data: holds,
+        borderColor: '#b45309',
+        backgroundColor: '#b45309',
+        pointRadius: 11,
+        pointHoverRadius: 14,
+        pointStyle: 'star',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 1.5,
+        showLine: false,
+        order: 2,
+      },
+    ],
+  },
   options: {
-    responsive: true, maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'nearest', intersect: true },
     plugins: {
-      legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } },
-      tooltip: { callbacks: { label: function(c) { return c.raw.label ? c.raw.label + ' · $' + c.raw.y : '$' + c.raw.y; } } }
+      legend: {
+        position: 'bottom',
+        labels: { padding: 14, usePointStyle: true, font: { size: 12 }, boxWidth: 10 }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(17,17,17,0.92)',
+        titleFont: { size: 12, weight: '600' },
+        bodyFont: { size: 12 },
+        padding: 10,
+        cornerRadius: 6,
+        callbacks: {
+          label: function(c) {
+            return c.raw.label || (c.dataset.label + ': $' + c.raw.y);
+          }
+        }
+      },
     },
     scales: {
-      x: { type: 'category', grid: { display: false }, ticks: { font: { size: 11 } } },
-      y: { title: { display: true, text: '价格（美元）', font: { size: 12 } }, ticks: { callback: v => '$' + v, font: { size: 11 } } }
+      x: {
+        type: 'time',
+        time: { unit: 'month', displayFormats: { month: 'yy-MM' }, tooltipFormat: 'yyyy-MM-dd' },
+        title: { display: true, text: '时间', font: { size: 12 }, color: '#475569' },
+        grid: { color: 'rgba(0,0,0,0.04)' },
+        ticks: { font: { size: 10 }, color: '#64748b', maxRotation: 0 }
+      },
+      y: {
+        title: { display: true, text: '价格（美元）', font: { size: 12 }, color: '#475569' },
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        ticks: { font: { size: 11 }, color: '#64748b', callback: v => '$' + v }
+      }
     }
   }
 });

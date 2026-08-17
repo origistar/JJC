@@ -6,6 +6,7 @@
 <title>Meta · 第七重仓 · 金渐成研究站</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
 
@@ -193,22 +194,22 @@
 <script>
 const ctx = document.getElementById('meta-chart').getContext('2d');
 const ops = [
-  { x: '2024-08-01', y: 525, op: 'buy', label: '2024 中建仓' },
-  { x: '2024-10-01', y: 580, op: 'hold', label: '持仓' },
-  { x: '2024-11-01', y: 720, op: 'sell', label: '$720 减仓' },
-  { x: '2024-11-15', y: 780, op: 'sell', label: '$780 减 5%（底仓）' },
-  { x: '2024-11-30', y: 790, op: 'sell', label: '$790 减仓' },
-  { x: '2024-12-15', y: 596, op: 'buy', label: '$596 捞回' },
-  { x: '2024-12-30', y: 585, op: 'buy', label: '$585 捞回' },
-  { x: '2025-04-09', y: 480, op: 'buy', label: '$480 抄底' },
-  { x: '2025-04-15', y: 556, op: 'buy', label: '$556 买入' },
-  { x: '2025-07-01', y: 650, op: 'buy', label: '$650 买入 1.1 万' },
-  { x: '2025-07-15', y: 627, op: 'buy', label: '$627 买入 1.1 万' },
-  { x: '2025-10-01', y: 713, op: 'hold', label: '$713 持仓' },
+  { x: '2024-08-01', y: 525, op: 'buy', label: '8月1日 · 2024 中建仓' },
+  { x: '2024-10-01', y: 580, op: 'hold', label: '10月1日 · 持仓' },
+  { x: '2024-11-01', y: 720, op: 'sell', label: '11月1日 · $720 减仓' },
+  { x: '2024-11-15', y: 780, op: 'sell', label: '11月15日 · $780 减 5%（底仓）' },
+  { x: '2024-11-30', y: 790, op: 'sell', label: '11月30日 · $790 减仓' },
+  { x: '2024-12-15', y: 596, op: 'buy', label: '12月15日 · $596 捞回' },
+  { x: '2024-12-30', y: 585, op: 'buy', label: '12月30日 · $585 捞回' },
+  { x: '2025-04-09', y: 480, op: 'buy', label: '4月9日 · $480 抄底' },
+  { x: '2025-04-15', y: 556, op: 'buy', label: '4月15日 · $556 买入' },
+  { x: '2025-07-01', y: 650, op: 'buy', label: '7月1日 · $650 买入 1.1 万' },
+  { x: '2025-07-15', y: 627, op: 'buy', label: '7月15日 · $627 买入 1.1 万' },
+  { x: '2025-10-01', y: 713, op: 'hold', label: '10月1日 · $713 持仓' },
 ];
-const buys = ops.filter(o => o.op === 'buy').map(o => ({ x: o.x, y: o.y, label: o.label }));
-const sells = ops.filter(o => o.op === 'sell').map(o => ({ x: o.x, y: o.y, label: o.label }));
-const holds = ops.filter(o => o.op === 'hold').map(o => ({ x: o.x, y: o.y, label: o.label }));
+const buys = ops.filter(o => o.op === 'buy');
+const sells = ops.filter(o => o.op === 'sell');
+const holds = ops.filter(o => o.op === 'hold');
 const line = [
   { x: '2024-08-01', y: 525 }, { x: '2024-09-01', y: 565 },
   { x: '2024-10-01', y: 580 }, { x: '2024-11-01', y: 720 },
@@ -224,15 +225,22 @@ const line = [
 new Chart(ctx, {
   type: 'line',
   data: { datasets: [
-    { label: 'META 价格', data: line, borderColor: '#94a3b8', backgroundColor: 'rgba(148,163,184,0.08)', borderWidth: 1.5, pointRadius: 0, tension: 0.2, fill: true, order: 3 },
-    { label: '加仓/抄底', data: buys, borderColor: '#047857', backgroundColor: '#047857', pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', showLine: false, order: 1 },
-    { label: '减仓/止盈', data: sells, borderColor: '#b91c1c', backgroundColor: '#b91c1c', pointRadius: 7, pointHoverRadius: 9, pointStyle: 'triangle', pointRotation: 180, showLine: false, order: 1 },
-    { label: '里程碑', data: holds, borderColor: '#b45309', backgroundColor: '#b45309', pointRadius: 8, pointStyle: 'star', showLine: false, order: 1 }
+    { label: 'META 价格', data: line, borderColor: '#64748b', backgroundColor: 'rgba(100,116,139,0.05)', borderWidth: 1.8, pointRadius: 0, tension: 0.25, fill: false, order: 3 },
+    { label: '加仓/抄底', data: buys, borderColor: '#047857', backgroundColor: '#047857', pointRadius: 8, pointHoverRadius: 11, pointStyle: 'triangle', pointBorderColor: '#fff', pointBorderWidth: 1.5, showLine: false, order: 1 },
+    { label: '减仓/止盈', data: sells, borderColor: '#b91c1c', backgroundColor: '#b91c1c', pointRadius: 8, pointHoverRadius: 11, pointStyle: 'triangle', pointRotation: 180, pointBorderColor: '#fff', pointBorderWidth: 1.5, showLine: false, order: 1 },
+    { label: '里程碑', data: holds, borderColor: '#b45309', backgroundColor: '#b45309', pointRadius: 11, pointHoverRadius: 14, pointStyle: 'star', pointBorderColor: '#fff', pointBorderWidth: 1.5, showLine: false, order: 2 }
   ]},
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } }, tooltip: { callbacks: { label: c => c.raw.label ? c.raw.label + ' · $' + c.raw.y : '$' + c.raw.y } } },
-    scales: { x: { type: 'category', grid: { display: false }, ticks: { font: { size: 11 } } }, y: { title: { display: true, text: '价格（美元）', font: { size: 12 } }, ticks: { callback: v => '$' + v, font: { size: 11 } } } }
+    interaction: { mode: 'nearest', intersect: true },
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true, font: { size: 12 }, boxWidth: 10 } },
+      tooltip: { backgroundColor: 'rgba(17,17,17,0.92)', titleFont: { size: 12, weight: '600' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 6, callbacks: { label: c => c.raw.label || (c.dataset.label + ': $' + c.raw.y) } }
+    },
+    scales: {
+      x: { type: 'time', time: { unit: 'month', displayFormats: { month: 'yy-MM' }, tooltipFormat: 'yyyy-MM-dd' }, title: { display: true, text: '时间', font: { size: 12 }, color: '#475569' }, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#64748b', maxRotation: 0 } },
+      y: { title: { display: true, text: '价格（美元）', font: { size: 12 }, color: '#475569' }, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 }, color: '#64748b', callback: v => '$' + v } }
+    }
   }
 });
 </script>
