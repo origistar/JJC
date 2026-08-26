@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日便宜价检测 · 金渐成研究站</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* 监测页专属样式（复用全站设计系统变量） */
+  .mc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:18px; }
+  .monitor-card { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow-sm); }
+  .mc-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .mc-ticker { font-size:22px; font-weight:700; font-family:"SF Mono",Menlo,Consolas,monospace; letter-spacing:-0.5px; }
+  .mc-name { font-size:13px; color:var(--ink-2); margin-top:2px; }
+  .mc-price-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+  .mc-price { font-size:34px; font-weight:800; font-family:"SF Mono",Menlo,Consolas,monospace; letter-spacing:-1px; }
+  .zone-badge { font-size:13px; font-weight:700; padding:6px 14px; border-radius:999px; white-space:nowrap; }
+  .mc-bar-wrap { margin:6px 0 18px; }
+  .mc-bar { position:relative; display:flex; height:12px; border-radius:999px; overflow:hidden; background:var(--bg-soft2); }
+  .seg { height:100%; }
+  .cur-dot { position:absolute; top:50%; width:18px; height:18px; border-radius:50%; background:#fff; border:3px solid var(--ink); transform:translate(-50%,-50%); box-shadow:var(--shadow-sm); }
+  .mc-axis { position:relative; height:34px; margin-top:6px; }
+  .mc-axis span { position:absolute; transform:translateX(-50%); font-size:11px; color:var(--ink-3); white-space:nowrap; top:0; font-family:"SF Mono",Menlo,Consolas,monospace; }
+  .mc-axis span::before { content:""; position:absolute; top:-8px; left:50%; width:1px; height:6px; background:var(--line-2); }
+  .mc-meta { border-top:1px dashed var(--line); padding-top:12px; }
+  .mc-row { display:flex; justify-content:space-between; gap:14px; padding:6px 0; font-size:13px; border-bottom:1px dashed var(--line); }
+  .mc-row:last-child { border-bottom:none; }
+  .mc-row span { color:var(--ink-3); flex-shrink:0; }
+  .mc-row b { color:var(--ink); text-align:right; font-weight:600; }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin:14px 0 4px; font-size:12.5px; color:var(--ink-2); }
+  .legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:middle; }
+  .updated { font-size:13px; color:var(--ink-3); font-family:"SF Mono",Menlo,Consolas,monospace; }
+  @media (max-width:760px){ .mc-axis span{ font-size:10px; } .mc-price{ font-size:28px; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand"><span class="dot"></span>金渐成研究站 <small>· 玑哥投资体系</small></div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="dashboard.html">仪表盘</a>
+      <a href="portfolio.html">持仓</a>
+      <a href="stocks.html">个股</a>
+      <a href="bitcoin.html">比特币</a>
+      <a href="copper.html">铜</a>
+      <a href="timeline.html">时间线</a>
+      <a href="philosophy.html">投资理念</a>
+      <a href="build-method.html">建仓五问</a>
+      <a href="cheap-monitor.html" class="active">便宜检测</a>
+      <a href="shengji.html">随笔</a>
+      <a href="life.html">生活</a>
+      <a href="parenting.html">育儿</a>
+      <a href="inheritance.html">家学</a>
+      <a href="food-safety.html">食安</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="meta">每日自动检测 · 整理自金建成的公众号</div>
+    <h1>每日便宜价检测</h1>
+    <p class="hero-sub">固定算法自动盯盘：SCHD 与伯克希尔是否进入「便宜区」。低于锚定价才动手，不预测只应对。</p>
+    <div class="updated">最后更新：2026-08-26 14:55 北京时间　|　刷新机制：GitHub Actions 每日北京时间 06:00 / 22:00 自动重算</div>
+  </section>
+
+  <section class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">便宜信号</div><div class="kpi-value" style="color:#047857">0</div><div class="kpi-sub">极度便宜 + 甜区</div></div>
+    <div class="kpi"><div class="kpi-label">合理</div><div class="kpi-value" style="color:#d97706">0</div><div class="kpi-sub">可小仓观察</div></div>
+    <div class="kpi"><div class="kpi-label">偏贵等待</div><div class="kpi-value" style="color:#9ca3af">2</div><div class="kpi-sub">未到击球区</div></div>
+    <div class="kpi"><div class="kpi-label">监测标的</div><div class="kpi-value">2</div><div class="kpi-sub">SCHD · BRK.B</div></div>
+  </section>
+
+  <div class="legend">
+    <span><i style="background:#047857"></i>极度便宜（深度折价，强烈关注）</span>
+    <span><i style="background:#0d9488"></i>甜区（便宜，可建仓）</span>
+    <span><i style="background:#d97706"></i>合理（可小仓 / 观察）</span>
+    <span><i style="background:#cbd5e1"></i>偏贵（等待，不追）</span>
+  </div>
+
+  <div class="mc-grid">
+
+    <div class="monitor-card">
+      <div class="mc-head">
+        <div>
+          <div class="mc-ticker">SCHD</div>
+          <div class="mc-name">施瓦布美国股息 ETF · 防守档定投核心</div>
+        </div>
+        <span class="tag tag-defensive">防守</span>
+      </div>
+
+      <div class="mc-price-row">
+        <div class="mc-price">$35.11</div>
+        <span class="zone-badge" style="background:#f1f5f9;color:#475569;border:1px solid #9ca3af;">偏贵 / 等待</span>
+      </div>
+
+      <div class="mc-bar-wrap">
+        <div class="mc-bar">
+          <div class="seg" style="width:18.50%;background:#047857;"></div>
+          <div class="seg" style="width:25.70%;background:#0d9488;"></div>
+          <div class="seg" style="width:17.13%;background:#d97706;"></div>
+          <div class="seg" style="width:38.67%;background:#cbd5e1;"></div>
+          <div class="cur-dot" style="left:87.97%;"></div>
+        </div>
+        <div class="mc-axis">
+          <span style="left:18.50%">极端 $27</span>
+          <span style="left:44.20%">甜区 $30</span>
+          <span style="left:61.33%">合理 $32</span>
+        </div>
+      </div>
+
+      <div class="mc-meta">
+        <div class="mc-row"><span>合理锚定</span><b>合理区间 ≤ $32（股息率约 3.3% 锚）</b></div>
+        <div class="mc-row"><span>研判</span><b>高股息宽基，防守档定投核心；按股息率 3.3% 反推便宜价。</b></div>
+        <div class="mc-row"><span>信号解读</span><b>距合理上限 +3.11（+9.7%），回到 $32 再考虑</b></div>
+        <div class="mc-row"><span>数据状态</span><b>实时</b></div>
+      </div>
+    </div>
+    
+
+    <div class="monitor-card">
+      <div class="mc-head">
+        <div>
+          <div class="mc-ticker">BRK.B</div>
+          <div class="mc-name">伯克希尔·哈撒韦 B · 防守档压舱石</div>
+        </div>
+        <span class="tag tag-defensive">防守</span>
+      </div>
+
+      <div class="mc-price-row">
+        <div class="mc-price">$504.32</div>
+        <span class="zone-badge" style="background:#f1f5f9;color:#475569;border:1px solid #9ca3af;">偏贵 / 等待</span>
+      </div>
+
+      <div class="mc-bar-wrap">
+        <div class="mc-bar">
+          <div class="seg" style="width:24.66%;background:#047857;"></div>
+          <div class="seg" style="width:17.12%;background:#0d9488;"></div>
+          <div class="seg" style="width:17.12%;background:#d97706;"></div>
+          <div class="seg" style="width:41.10%;background:#cbd5e1;"></div>
+          <div class="cur-dot" style="left:61.86%;"></div>
+        </div>
+        <div class="mc-axis">
+          <span style="left:24.66%">极端 $450</span>
+          <span style="left:41.78%">甜区 $475</span>
+          <span style="left:58.90%">合理 $500</span>
+        </div>
+      </div>
+
+      <div class="mc-meta">
+        <div class="mc-row"><span>合理锚定</span><b>合理区间 $490–500（PB≈1.4，可建仓）</b></div>
+        <div class="mc-row"><span>研判</span><b>按账面价值 PB≈1.4 锚定；≤ $450 为深度折价，强烈关注。</b></div>
+        <div class="mc-row"><span>信号解读</span><b>距合理上限 +4.32（+0.9%），回到 $500 再考虑</b></div>
+        <div class="mc-row"><span>数据状态</span><b>实时</b></div>
+      </div>
+    </div>
+    
+  </div>
+
+  <h2>算法说明（透明可复核）</h2>
+  <div class="card">
+    <div class="card-title">判定规则</div>
+    <p style="margin:0 0 10px">每只标的预设三档锚定价（<b>极端 ≤ 甜区 ≤ 合理</b>），取实时价后：</p>
+    <ul class="strategy-list">
+      <li><b>价格 ≤ 极端</b> → 极度便宜：深度折价，强烈关注 / 可重仓。</li>
+      <li><b>价格 ≤ 甜区</b> → 甜区：便宜，进入建仓区间，分批买入。</li>
+      <li><b>价格 ≤ 合理</b> → 合理：估值合理，可小仓或继续观察。</li>
+      <li><b>价格 &gt; 合理</b> → 偏贵 / 等待：未到击球区，不追高。</li>
+    </ul>
+    <p style="margin:12px 0 0;color:var(--ink-3);font-size:13px">数据来源：CNBC（优先）→ Nasdaq（兜底），无需 API Key。抓取失败时沿用上次有效价并标注「缓存」。锚定价为与玑哥确认的主观便宜价，非投资建议；可随时在 <code>gen_cheap_monitor.py</code> 的 ASSETS 中调整或新增标的。</p>
+  </div>
+</main>
+
+<footer>
+  金渐成研究站 · 整理自金建成的公众号 · 本页为固定算法的自动便宜价检测，所有数据仅供参考，非投资建议。
+</footer>
+
+</body>
+</html>
