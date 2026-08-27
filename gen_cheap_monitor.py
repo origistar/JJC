@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-每日便宜价检测生成器 · 金渐成研究站
+每日便宜价检测生成器 · 个人投资组合监测
 ================================================
 固定算法：对每只标的预设三档锚定价（extreme <= sweet <= fair），
 拉取实时价后判定落在哪个区间，输出 Apple 风格网页 + 原始数据 JSON。
@@ -30,7 +30,7 @@ from datetime import datetime, timezone, timedelta
 # ---- 时区：北京（GMT+8） ----
 BJ = timezone(timedelta(hours=8))
 
-# ---- 锚定算法配置（用户与玑哥确认的便宜价） ----
+# ---- 锚定算法配置（便宜价三档锚定参数） ----
 # stooq / yahoo 为不同数据源用的代码；extreme/sweet/fair 单位与 currency 一致。
 ASSETS = [
     {
@@ -225,7 +225,7 @@ def render(records, updated_iso):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日便宜价检测 · 金渐成研究站</title>
+<title>每日便宜价检测 · 个人投资组合监测</title>
 <link rel="stylesheet" href="assets/style.css">
 <style>
   /* 监测页专属样式（复用全站设计系统变量） */
@@ -253,36 +253,25 @@ def render(records, updated_iso):
   .legend i {{ display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:middle; }}
   .updated {{ font-size:13px; color:var(--ink-3); font-family:"SF Mono",Menlo,Consolas,monospace; }}
   @media (max-width:760px){{ .mc-axis span{{ font-size:10px; }} .mc-price{{ font-size:28px; }} }}
+  .standalone-head {{ background:rgba(251,250,246,0.92); backdrop-filter:saturate(180%) blur(12px); -webkit-backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--line); padding:0 24px; position:sticky; top:0; z-index:100; }}
+  .sh-inner {{ max-width:1240px; margin:0 auto; height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }}
+  .sh-brand {{ font-weight:700; font-size:17px; letter-spacing:0.3px; display:flex; align-items:center; gap:9px; }}
+  .sh-brand::before {{ content:""; width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,var(--aggressive) 0%,var(--accent) 100%); box-shadow:0 0 0 3px var(--accent-soft); display:inline-block; }}
+  .sh-tag {{ font-size:12.5px; color:var(--ink-3); }}
 </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="topnav-inner">
-    <div class="brand"><span class="dot"></span>金渐成研究站 <small>· 玑哥投资体系</small></div>
-    <div class="nav-links">
-      <a href="index.html">首页</a>
-      <a href="dashboard.html">仪表盘</a>
-      <a href="portfolio.html">持仓</a>
-      <a href="stocks.html">个股</a>
-      <a href="bitcoin.html">比特币</a>
-      <a href="copper.html">铜</a>
-      <a href="timeline.html">时间线</a>
-      <a href="philosophy.html">投资理念</a>
-      <a href="build-method.html">建仓五问</a>
-      <a href="cheap-monitor.html" class="active">便宜检测</a>
-      <a href="shengji.html">随笔</a>
-      <a href="life.html">生活</a>
-      <a href="parenting.html">育儿</a>
-      <a href="inheritance.html">家学</a>
-      <a href="food-safety.html">食安</a>
-    </div>
+<header class="standalone-head">
+  <div class="sh-inner">
+    <div class="sh-brand">每日便宜价检测</div>
+    <div class="sh-tag">个人投资组合监测 · 固定算法自动盯盘</div>
   </div>
-</nav>
+</header>
 
 <main>
   <section class="hero">
-    <div class="meta">每日自动检测 · 整理自金建成的公众号</div>
+    <div class="meta">每日自动检测 · 个人投资组合监测</div>
     <h1>每日便宜价检测</h1>
     <p class="hero-sub">固定算法自动盯盘：SCHD 与伯克希尔是否进入「便宜区」。低于锚定价才动手，不预测只应对。</p>
     <div class="updated">最后更新：{upd_bj}　|　刷新机制：GitHub Actions 每日北京时间 06:00 / 22:00 自动重算</div>
@@ -316,12 +305,12 @@ def render(records, updated_iso):
       <li><b>价格 ≤ 合理</b> → 合理：估值合理，可小仓或继续观察。</li>
       <li><b>价格 &gt; 合理</b> → 偏贵 / 等待：未到击球区，不追高。</li>
     </ul>
-    <p style="margin:12px 0 0;color:var(--ink-3);font-size:13px">数据来源：CNBC（优先）→ Nasdaq（兜底），无需 API Key。抓取失败时沿用上次有效价并标注「缓存」。锚定价为与玑哥确认的主观便宜价，非投资建议；可随时在 <code>gen_cheap_monitor.py</code> 的 ASSETS 中调整或新增标的。</p>
+    <p style="margin:12px 0 0;color:var(--ink-3);font-size:13px">数据来源：CNBC（优先）→ Nasdaq（兜底），无需 API Key。抓取失败时沿用上次有效价并标注「缓存」。锚定价为预设的主观便宜价，非投资建议；可随时在 <code>gen_cheap_monitor.py</code> 的 ASSETS 中调整或新增标的。</p>
   </div>
 </main>
 
 <footer>
-  金渐成研究站 · 整理自金建成的公众号 · 本页为固定算法的自动便宜价检测，所有数据仅供参考，非投资建议。
+  个人投资组合监测 · 固定算法自动盯盘，所有数据仅供参考，非投资建议。
 </footer>
 
 </body>
