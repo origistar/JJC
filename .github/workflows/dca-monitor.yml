@@ -1,0 +1,40 @@
+name: 保守仓定投参考
+
+on:
+  schedule:
+    # 北京时间 06:30 与 22:30（对应 UTC 22:30 与 14:30），覆盖美股收盘后
+    - cron: "30 14,22 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 运行动态锚定并生成网页
+        run: python gen_dca.py
+
+      - name: 提交并更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dca.html dca-data.json
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "chore: 保守仓定投参考自动重算 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase origin main || true
+          git push origin main

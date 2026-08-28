@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>保守仓定投参考 · SCHD & BRK.B</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .mc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:18px; }
+  .monitor-card { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow-sm); }
+  .mc-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .mc-ticker { font-size:22px; font-weight:700; font-family:"SF Mono",Menlo,Consolas,monospace; letter-spacing:-0.5px; }
+  .mc-name { font-size:13px; color:var(--ink-2); margin-top:2px; }
+  .mc-price-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+  .mc-price { font-size:34px; font-weight:800; font-family:"SF Mono",Menlo,Consolas,monospace; letter-spacing:-1px; }
+  .zone-badge { font-size:13px; font-weight:700; padding:6px 14px; border-radius:999px; white-space:nowrap; }
+  .mc-mult-row { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; background:var(--bg-soft2); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+  .mc-mult-label { font-size:13px; color:var(--ink-3); }
+  .mc-mult { font-size:30px; font-weight:800; font-family:"SF Mono",Menlo,Consolas,monospace; }
+  .mc-mult-sub { font-size:12px; color:var(--ink-3); }
+  .mc-bar-wrap { margin:6px 0 14px; }
+  .mc-bar { position:relative; display:flex; height:12px; border-radius:999px; overflow:hidden; background:var(--bg-soft2); }
+  .seg { height:100%; }
+  .cur-dot { position:absolute; top:50%; width:18px; height:18px; border-radius:50%; background:#fff; border:3px solid var(--ink); transform:translate(-50%,-50%); box-shadow:var(--shadow-sm); }
+  .mc-axis { position:relative; height:34px; margin-top:6px; }
+  .mc-axis span { position:absolute; transform:translateX(-50%); font-size:11px; color:var(--ink-3); white-space:nowrap; top:0; font-family:"SF Mono",Menlo,Consolas,monospace; }
+  .mc-axis span::before { content:""; position:absolute; top:-8px; left:50%; width:1px; height:6px; background:var(--line-2); }
+  .mc-meta { border-top:1px dashed var(--line); padding-top:10px; }
+  .mc-row { display:flex; justify-content:space-between; gap:14px; padding:6px 0; font-size:13px; border-bottom:1px dashed var(--line); }
+  .mc-row:last-child { border-bottom:none; }
+  .mc-row span { color:var(--ink-3); flex-shrink:0; }
+  .mc-row b { color:var(--ink); text-align:right; font-weight:600; }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin:14px 0 4px; font-size:12.5px; color:var(--ink-2); }
+  .legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:middle; }
+  .standalone-head { background:rgba(251,250,246,0.92); backdrop-filter:saturate(180%) blur(12px); -webkit-backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--line); padding:0 24px; position:sticky; top:0; z-index:100; }
+  .sh-inner { max-width:1240px; margin:0 auto; height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .sh-brand { font-weight:700; font-size:17px; letter-spacing:0.3px; display:flex; align-items:center; gap:9px; }
+  .sh-brand::before { content:""; width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,var(--aggressive) 0%,var(--accent) 100%); box-shadow:0 0 0 3px var(--accent-soft); display:inline-block; }
+  .sh-tag { font-size:12.5px; color:var(--ink-3); }
+  @media (max-width:760px){ .mc-axis span{ font-size:10px; } .mc-price{ font-size:28px; } .mc-mult{ font-size:24px; } }
+</style>
+</head>
+<body>
+
+<header class="standalone-head">
+  <div class="sh-inner">
+    <div class="sh-brand">保守仓定投参考</div>
+    <div class="sh-tag">SCHD · BRK.B · 价低多投 / 价高少投 · 动态锚定</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="meta">防守档定投 · 不傻定投 · 锚定随基本面自动调整</div>
+    <h1>保守仓定投参考</h1>
+    <p class="hero-sub">用「实时便宜度指标 + 定投系数」替代瞎定投：SCHD 看股息率（历史中位数锚），
+    BRK.B 看市净率（巴菲特 P/B 框架锚）。价格越低→指标越便宜→本周定投系数越大。所有锚定价由
+    分红 / 账面价值动态推导，不写死任何美元价，可长期用。</p>
+    <div class="updated">最后更新：2026-08-28 10:55 北京时间　|　刷新机制：GitHub Actions 每日北京时间 06:00 / 22:00 自动重算</div>
+  </section>
+
+  <section class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">SCHD 本周系数</div><div class="kpi-value" style="color:#d97706">×0.6</div><div class="kpi-sub">偏贵 / 等待</div></div>
+    <div class="kpi"><div class="kpi-label">BRK.B 本周系数</div><div class="kpi-value" style="color:#d97706">×0.6</div><div class="kpi-sub">偏贵 / 等待</div></div>
+    <div class="kpi"><div class="kpi-label">SCHD 股息率</div><div class="kpi-value">3.01%</div><div class="kpi-sub">合理 3.16%</div></div>
+    <div class="kpi"><div class="kpi-label">BRK.B 市净率</div><div class="kpi-value">1.49×</div><div class="kpi-sub">合理 1.40×</div></div>
+  </section>
+
+  <div class="legend">
+    <span><i style="background:#047857"></i>极度便宜（×2.0 重投）</span>
+    <span><i style="background:#0d9488"></i>甜区（×1.5 加投）</span>
+    <span><i style="background:#d97706"></i>合理（×1.0 基准）</span>
+    <span><i style="background:#9ca3af"></i>偏贵（×0.6 减量）</span>
+    <span><i style="background:#dc2626"></i>极贵（×0.3 观望）</span>
+  </div>
+
+  <div class="mc-grid">
+
+    <div class="monitor-card">
+      <div class="mc-head">
+        <div>
+          <div class="mc-ticker">SCHD</div>
+          <div class="mc-name">施瓦布美国股息 ETF · 防守档定投核心</div>
+        </div>
+        <span class="tag tag-defensive">防守</span>
+      </div>
+
+      <div class="mc-price-row">
+        <div class="mc-price">$34.83</div>
+        <span class="zone-badge" style="background:#f1f5f9;color:#475569;border:1px solid #9ca3af;">偏贵 / 等待</span>
+      </div>
+
+      <div class="mc-mult-row">
+        <div class="mc-mult-label">本周定投系数</div>
+        <div class="mc-mult" style="color:#d97706">×0.6</div>
+        <div class="mc-mult-sub">便宜度 0.95 · 股息率 3.01%（合理 3.16%）</div>
+      </div>
+
+      <div class="mc-bar-wrap">
+        <div class="mc-bar">
+          <div class="seg" style="width:16.09%;background:#047857;"></div>
+          <div class="seg" style="width:23.25%;background:#0d9488;"></div>
+          <div class="seg" style="width:21.30%;background:#d97706;"></div>
+          <div class="seg" style="width:39.35%;background:#cbd5e1;"></div>
+          <div class="cur-dot" style="left:72.99%;"></div>
+        </div>
+        <div class="mc-axis">
+          <span style="left:16.09%">极度 $27</span>
+          <span style="left:39.35%">甜区 $30</span>
+          <span style="left:60.65%">合理 $33</span>
+          <span style="left:86.43%">偏贵 $37</span>
+        </div>
+      </div>
+
+      <div class="mc-meta">
+        <div class="mc-row"><span>锚定逻辑</span><b>合理收益率 = 2012–2025 历史中位数 3.16%；各档价 = TTM分红÷目标收益率，随分红自动抬高</b></div>
+        <div class="mc-row"><span>信号解读</span><b>价高于合理线 +5.0%，本周按 <b>×0.6</b> 减量等待</b></div>
+        <div class="mc-row"><span>数据状态</span><b>实时</b></div>
+      </div>
+    </div>
+    
+
+    <div class="monitor-card">
+      <div class="mc-head">
+        <div>
+          <div class="mc-ticker">BRK.B</div>
+          <div class="mc-name">伯克希尔·哈撒韦 B · 防守档压舱石</div>
+        </div>
+        <span class="tag tag-defensive">防守</span>
+      </div>
+
+      <div class="mc-price-row">
+        <div class="mc-price">$503.70</div>
+        <span class="zone-badge" style="background:#f1f5f9;color:#475569;border:1px solid #9ca3af;">偏贵 / 等待</span>
+      </div>
+
+      <div class="mc-mult-row">
+        <div class="mc-mult-label">本周定投系数</div>
+        <div class="mc-mult" style="color:#d97706">×0.6</div>
+        <div class="mc-mult-sub">便宜度 0.94 · 市净率 P/B 1.49×（合理 1.40×）</div>
+      </div>
+
+      <div class="mc-bar-wrap">
+        <div class="mc-bar">
+          <div class="seg" style="width:12.21%;background:#047857;"></div>
+          <div class="seg" style="width:30.53%;background:#0d9488;"></div>
+          <div class="seg" style="width:30.53%;background:#d97706;"></div>
+          <div class="seg" style="width:26.72%;background:#cbd5e1;"></div>
+          <div class="cur-dot" style="left:87.71%;"></div>
+        </div>
+        <div class="mc-axis">
+          <span style="left:12.21%">极度 $337</span>
+          <span style="left:42.75%">甜区 $404</span>
+          <span style="left:73.28%">合理 $472</span>
+          <span style="left:88.55%">偏贵 $506</span>
+        </div>
+      </div>
+
+      <div class="mc-meta">
+        <div class="mc-row"><span>锚定逻辑</span><b>锚定巴菲特框架：合理=1.40×BVPS、甜区=1.20×BVPS（显著低估回购区）、偏贵线=1.50×BVPS；BVPS=337.04（2026-06-30）</b></div>
+        <div class="mc-row"><span>信号解读</span><b>价高于合理线 +6.7%，本周按 <b>×0.6</b> 减量等待</b></div>
+        <div class="mc-row"><span>数据状态</span><b>实时</b></div>
+      </div>
+    </div>
+    
+  </div>
+
+  <h2>锚定逻辑（透明可复核）</h2>
+  <div class="card">
+    <div class="card-title">两套内在逻辑</div>
+    <p style="margin:0 0 10px"><b>SCHD — 股息率锚定</b>：合理收益率取 2012–2025 年化股息率中位数 <b>3.16%</b>。
+    各档价 = TTM分红 ÷ 目标收益率（合理 3.16% / 甜区 3.46% / 极度便宜 3.86% / 偏贵线 2.86%）。
+    因 SCHD 分红逐年增长，各档价会<b>自动抬高</b>，不会像固定价那样越往后越「假贵」。</p>
+    <p style="margin:0 0 10px"><b>BRK.B — 市净率(P/B)锚定</b>：采用巴菲特亲手定的估值框架——P/B ≤ 1.2 倍为其认定的
+    「显著低估、大规模回购区」，1.4–1.5 倍为常态/乐观溢价。各档价 = 倍数 × 账面价值/股（当前 $337.04/股，2026-06-30）。
+    账面价值每季度增长，各档价同样自动抬高。</p>
+    <p style="margin:12px 0 0;color:var(--ink-3);font-size:13px">定投系数规则：极度便宜 ×2.0｜甜区 ×1.5｜合理 ×1.0｜偏贵 ×0.6｜极贵 ×0.3。
+    便宜度 = 当前指标 ÷ 合理指标（SCHD=股息率比；BRK.B=1.40÷P/B）。数据来源 CNBC（优先）→ Nasdaq（兜底）。
+    锚定为客观便宜度参考，非投资建议；分红/BVPS 每季度复核一次即可。</p>
+  </div>
+</main>
+
+<footer>
+  保守仓定投参考 · 动态锚定自动重算，所有数据仅供参考，非投资建议。
+</footer>
+
+</body>
+</html>
