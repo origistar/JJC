@@ -1,13 +1,13 @@
 {
-  "updated": "2026-09-04T06:08:33.700742+08:00",
+  "updated": "2026-09-04T22:08:06.044352+08:00",
   "prices": {
-    "SCHD": 35.08,
-    "BRK.B": 508.13
+    "SCHD": 34.87,
+    "BRK.B": 506.16
   },
   "detail": [
     {
       "ticker": "SCHD",
-      "price": 35.08,
+      "price": 34.87,
       "zone": "偏贵 / 等待",
       "level": 3,
       "source": "CNBC",
@@ -15,7 +15,7 @@
     },
     {
       "ticker": "BRK.B",
-      "price": 508.13,
+      "price": 506.16,
       "zone": "偏贵 / 等待",
       "level": 3,
       "source": "CNBC",
